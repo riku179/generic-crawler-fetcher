@@ -1,0 +1,71 @@
+{
+  "_id": "f1-data",
+  "startUrl": [
+    "https://formula1-data.com/"
+  ],
+  "selectors": [
+    {
+      "id": "latest news",
+      "type": "SelectorElement",
+      "parentSelectors": [
+        "_root"
+      ],
+      "selector": "a.mdlListing--resp",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "link",
+      "type": "SelectorLink",
+      "parentSelectors": [
+        "latest news"
+      ],
+      "selector": "_parent_",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "thumbnail",
+      "type": "SelectorImage",
+      "parentSelectors": [
+        "latest news"
+      ],
+      "selector": "img.lazyloaded",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "pubDate",
+      "type": "SelectorElementAttribute",
+      "parentSelectors": [
+        "latest news"
+      ],
+      "selector": "time",
+      "multiple": false,
+      "extractAttribute": "datetime",
+      "delay": 0
+    },
+    {
+      "id": "title",
+      "type": "SelectorText",
+      "parentSelectors": [
+        "latest news"
+      ],
+      "selector": "h3.mdlListing__title",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "bodytext",
+      "type": "SelectorText",
+      "parentSelectors": [
+        "link"
+      ],
+      "selector": "div.entry p",
+      "multiple": true,
+      "regex": "",
+      "delay": 0
+    }
+  ]
+}

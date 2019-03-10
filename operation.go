@@ -60,7 +60,7 @@ func newOperation(childrenMap findChildrenMap, selector Selector) Operation {
 
 	children, ok := childrenMap[selector.GetId()]
 	if !ok {
-		return Operation{selector,childOperations}
+		return Operation{selector, childOperations}
 	}
 	for _, child := range children {
 		childOperations = append(childOperations, newOperation(childrenMap, child))
@@ -78,4 +78,8 @@ func (o *Operation) Children() []Operation {
 
 func (o *Operation) Type() SelectorType {
 	return o.selector.GetType()
+}
+
+func (o *Operation) Next(f func(Operation)) Operation {
+	return Operation{}
 }

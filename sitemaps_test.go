@@ -3,9 +3,10 @@ package fetcher_test
 import (
 	"encoding/json"
 	"fetcher"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func check(err error) {
@@ -15,7 +16,7 @@ func check(err error) {
 }
 
 func TestSiteMap_UnmarshalJSON(t *testing.T) {
-	input, err := ioutil.ReadFile("./sitemap.json")
+	input, err := ioutil.ReadFile("./sitemaps/simple.json")
 	check(err)
 
 	var sitemap fetcher.SiteMap

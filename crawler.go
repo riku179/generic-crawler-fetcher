@@ -5,11 +5,11 @@ import (
 )
 
 type Crawler struct {
-	id string
-	entryUrl string
-	operations   []Operation
-	current	     *Operation
-	corrector colly.Collector
+	id         string
+	entryUrl   string
+	operations []Operation
+	current    *Operation
+	corrector  colly.Collector
 }
 
 func NewCrawler(siteMap SiteMap) Crawler {
@@ -17,10 +17,10 @@ func NewCrawler(siteMap SiteMap) Crawler {
 		panic("siteMap.StartUrl needs just one")
 	}
 	return Crawler{
-		id: siteMap.Id,
-		entryUrl: siteMap.StartUrl[0],
+		id:         siteMap.Id,
+		entryUrl:   siteMap.StartUrl[0],
 		operations: NewOperations(siteMap.Selectors),
-		current: nil,
+		current:    nil,
 	}
 }
 

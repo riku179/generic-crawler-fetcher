@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "on"
+
+    working_directory: /go/src/generic-crawler-fetcher
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restore go modules cache
+          keys:
+              - v1-mod-{{ .Branch }}-{{ checksum "go.mod" }}
+
+      - run:
+          name: Vendoring
+          command: go mod download
+
+      - save_cache:
+          name: Save go modules cache
+          key: v1-mod-{{ .Branch }}-{{ checksum "go.mod" }}
+          paths:
+              - ~/go/pkg/mod/cache
+
+      - run:
+          name: Build go binary
+          command: go test

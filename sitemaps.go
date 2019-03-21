@@ -85,6 +85,7 @@ type Selector interface {
 	GetParentSelectors() []SelectorId
 	GetSelector() string
 	IsMultiple() bool
+	GetDelay () int
 }
 
 type selectorBase struct {
@@ -114,6 +115,10 @@ func (s *selectorBase) GetSelector() string {
 
 func (s *selectorBase) IsMultiple() bool {
 	return s.Multiple
+}
+
+func (s *selectorBase) GetDelay() int {
+	return s.Delay
 }
 
 type SelectorElement struct {

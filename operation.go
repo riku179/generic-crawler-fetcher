@@ -1,5 +1,10 @@
 package fetcher
 
+import (
+	"fmt"
+	"strings"
+)
+
 func NewOperations(selectors []Selector) []Operation {
 	selectorMap := make(map[SelectorId]Selector)
 	for _, selector := range selectors {
@@ -15,7 +20,7 @@ func NewOperations(selectors []Selector) []Operation {
 
 	operations := make([]Operation, 0)
 	for _, root := range rootSelectors {
-		operations = append(operations, newOperation(findChildrenMap, root))
+		operations = append(operations, newOperationTree(findChildrenMap, root, nil))
 	}
 
 	return operations
@@ -53,33 +58,56 @@ func newFindChildrenMap(selectors []Selector) findChildrenMap {
 type Operation struct {
 	selector Selector
 	children []Operation
+	parent *Operation
+	executed bool
 }
 
-func newOperation(childrenMap findChildrenMap, selector Selector) Operation {
-	childOperations := make([]Operation, 0)
+func newOperationTree(childrenMap findChildrenMap, selector Selector, parent *Operation) Operation {
+	childrenOperations := make([]Operation, 0)
 
-	children, ok := childrenMap[selector.GetId()]
+	childrenSelectors, ok := childrenMap[selector.GetId()]
 	if !ok {
-		return Operation{selector, childOperations}
+		return Operation{selector, childrenOperations, parent, false}
 	}
-	for _, child := range children {
-		childOperations = append(childOperations, newOperation(childrenMap, child))
+
+	var me Operation
+	for _, childSelector := range childrenSelectors {
+		childrenOperations = append(childrenOperations, newOperationTree(childrenMap, childSelector, &me))
 	}
-	return Operation{selector, childOperations}
+	me = Operation{selector, childrenOperations, parent, false}
+	return me
 }
 
 func (o *Operation) Selector() Selector {
 	return o.selector
 }
 
-func (o *Operation) Children() []Operation {
-	return o.children
-}
-
 func (o *Operation) Type() SelectorType {
 	return o.selector.GetType()
 }
 
-func (o *Operation) Next(f func(Operation)) Operation {
-	return Operation{}
+func (o *Operation) Children() []Operation {
+	return o.children
+}
+
+func (o *Operation)	Parent() *Operation {
+	return o.parent
+}
+
+func (o *Operation) Executed() bool {
+	return o.executed
+}
+
+func (o *Operation) DebugPrint (depth int) {
+	var tabs []string
+	for i := 0; i < depth; i++ {
+		tabs = append(tabs, "\t")
+	}
+	printTabs := func() {fmt.Printf("%s", strings.Join(tabs, ""))}
+
+	fmt.Printf("id:%q type:%q selector:%q delay:%q", o.selector.GetId(), o.selector.GetType(), o.selector.GetSelector(), o.selector.GetDelay())
+	for _, child := range o.children {
+		printTabs()
+		child.DebugPrint(depth - 1)
+	}
 }

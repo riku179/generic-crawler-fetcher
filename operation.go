@@ -58,7 +58,7 @@ func newFindChildrenMap(selectors []Selector) findChildrenMap {
 type Operation struct {
 	selector Selector
 	children []Operation
-	parent *Operation
+	parent   *Operation
 	executed bool
 }
 
@@ -90,7 +90,7 @@ func (o *Operation) Children() []Operation {
 	return o.children
 }
 
-func (o *Operation)	Parent() *Operation {
+func (o *Operation) Parent() *Operation {
 	return o.parent
 }
 
@@ -98,16 +98,23 @@ func (o *Operation) Executed() bool {
 	return o.executed
 }
 
-func (o *Operation) DebugPrint (depth int) {
+func debug(depth int, tabWidth int, operation Operation) {
 	var tabs []string
-	for i := 0; i < depth; i++ {
+	for i := 0; i < tabWidth; i++ {
 		tabs = append(tabs, "\t")
 	}
-	printTabs := func() {fmt.Printf("%s", strings.Join(tabs, ""))}
-
-	fmt.Printf("id:%q type:%q selector:%q delay:%q", o.selector.GetId(), o.selector.GetType(), o.selector.GetSelector(), o.selector.GetDelay())
-	for _, child := range o.children {
-		printTabs()
-		child.DebugPrint(depth - 1)
+	fmt.Printf("%s id:%q type:%q selector:%q delay:%q",
+		strings.Join(tabs, ""),
+		operation.selector.GetId(),
+		operation.selector.GetType(),
+		operation.selector.GetSelector(),
+		operation.selector.GetDelay(),
+	)
+	for _, child := range operation.Children() {
+		debug(depth-1, tabWidth+1, child)
 	}
+}
+
+func (o *Operation) Debug(depth int) {
+	debug(depth, 0, *o)
 }

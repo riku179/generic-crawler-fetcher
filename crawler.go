@@ -16,6 +16,7 @@ func NewCrawler(siteMap SiteMap) Crawler {
 	if len(siteMap.StartUrl) != 1 {
 		panic("siteMap.StartUrl needs just one")
 	}
+
 	return Crawler{
 		id:         siteMap.Id,
 		entryUrl:   siteMap.StartUrl[0],
@@ -25,9 +26,14 @@ func NewCrawler(siteMap SiteMap) Crawler {
 }
 
 func (c *Crawler) Exec() {
+	collector := colly.NewCollector()
 	for _, rootOp := range c.operations {
 		switch rootOp.Type() {
 		case Element:
+			collector.OnHTML(rootOp.selector.GetSelector(), func(e *colly.HTMLElement) {
+			})
+		case Link:
+			//collector.OnHTML()
 		}
 	}
 }
